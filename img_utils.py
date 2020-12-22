@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.feature_extraction import image
-from scipy.misc import imsave, imread, imresize
+from scipy.misc import imageio.imwrite, imread, imresize
 from sklearn.feature_extraction.image import reconstruct_from_patches_2d, extract_patches_2d
 from scipy.ndimage.filters import gaussian_filter
 import os
@@ -152,7 +152,7 @@ def transform_images(directory):
         for i in range(nb_imgs):
             ip = patches[i]
             # Save ground truth image X
-            imsave(output_path_X + "%d_%d.png" % (index, i+1), ip)
+            imageio.imwrite(output_path_X + "%d_%d.png" % (index, i+1), ip)
 
             # Apply Gaussian Blur to Y
             op = gaussian_filter(ip, sigma=0.5)
@@ -164,7 +164,7 @@ def transform_images(directory):
             op = imresize(op, (fsub, fsub), interp='bicubic')
 
             # Save Y
-            imsave(output_path_Y + "%d_%d.png" % (index, i+1), op)
+            imageio.imwrite(output_path_Y + "%d_%d.png" % (index, i+1), op)
 
         print("Finished image %d in time %0.2f seconds. (%s)" % (index, time.time() - t1, file))
         index += 1
