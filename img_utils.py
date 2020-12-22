@@ -1,7 +1,8 @@
 import numpy as np
 from sklearn.feature_extraction import image
 from imageio import imread ,imwrite
-from scipy.misc import  imresize
+# from scipy.misc import  imresize
+import cv2
 from sklearn.feature_extraction.image import reconstruct_from_patches_2d, extract_patches_2d
 from scipy.ndimage.filters import gaussian_filter
 import os
@@ -101,7 +102,7 @@ def loadDenoiseImages(from_file=True):
     for i, file in enumerate(os.listdir(output_path_Y)):
         # Training images are blurred versions ('Y' according to paper)
         y = imread(output_path_Y + file, mode="RGB")
-        y = imresize(y, (fsub-1, fsub-1))
+        y = cv2.resize(y, (fsub-1, fsub-1))
 
         if K.image_dim_ordering() == "th":
             y = y.transpose((2, 0, 1)).astype(np.float32) / 255
@@ -112,7 +113,7 @@ def loadDenoiseImages(from_file=True):
 
         # Non blurred images ('X' according to paper)
         x = imread(output_path_X + file, mode="RGB")
-        x = imresize(x, (fsub-1, fsub-1))
+        x = cv2.resize(x, (fsub-1, fsub-1))
 
         if K.image_dim_ordering() == "th":
             x = x.transpose((2, 0, 1)).astype(np.float32) / 255
@@ -143,7 +144,7 @@ def transform_images(directory):
         img = imread(input_path + file, mode='RGB')
 
         # Resize to 400 x 400
-        img = imresize(img, (nb_imgs, nb_imgs))
+        img = cv2.resize(img, (nb_imgs, nb_imgs))
 
         # Create patches
         patches = image.extract_patches_2d(img, (fsub, fsub), max_patches=nb_imgs)
@@ -159,10 +160,10 @@ def transform_images(directory):
             op = gaussian_filter(ip, sigma=0.5)
 
             # Subsample by scaling factor 3 to Y
-            op = imresize(op, (fsub // scaling_factor, fsub // scaling_factor))
+            op = cv2.resize(op, (fsub // scaling_factor, fsub // scaling_factor))
 
             # Upscale by scaling factor 3 to Y
-            op = imresize(op, (fsub, fsub), interp='bicubic')
+            op = cv2.resize(op, (fsub, fsub), interp='bicubic')
 
             # Save Y
             imageio.imwrite(output_path_Y + "%d_%d.png" % (index, i+1), op)
@@ -221,7 +222,7 @@ def merge_images(imgs, scaling_factor):
 def make_patches(x, scale, patch_size, upscale=True, verbose=1):
     '''x shape: (num_channels, rows, cols)'''
     height, width = x.shape[:2]
-    if upscale: x = imresize(x, (height * scale, width * scale))
+    if upscale: x = cv2.resize(x, (height * scale, width * scale))
     patches = extract_patches_2d(x, (patch_size, patch_size))
     return patches
 
