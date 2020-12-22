@@ -733,7 +733,7 @@ class ResNetSR(BaseSuperResolutionModel):
         init = ip
 
         channel_dim = 1 if K.image_data_format() == 'channels_first' else -1
-        channels = init._keras_shape[channel_dim]
+        channels = init.shape[channel_dim]
 
         #x = Convolution2D(256, (3, 3), activation="relu", padding='same', name='sr_res_upconv1_%d' % id)(init)
         #x = SubPixelUpscaling(r=2, channels=self.n, name='sr_res_upscale1_%d' % id)(x)
@@ -1135,7 +1135,7 @@ class DistilledResNetSR(BaseSuperResolutionModel):
         init = ip
 
         channel_dim = 1 if K.image_data_format() == 'channels_first' else -1
-        channels = init._keras_shape[channel_dim]
+        channels = init.shape[channel_dim]
 
         x = UpSampling2D(name='student_upsampling_%d' % id)(init)
         x = Convolution2D(self.n * 2, (3, 3), activation="relu", padding='same', name='student_sr_res_filter1_%d' % id)(x)
