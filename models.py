@@ -233,7 +233,7 @@ class BaseSuperResolutionModel(object):
             return result
 
         if verbose: print("Saving image.")
-        imsave(filename, result)
+        imageio.imwrite(filename, result)
 
     def __match_autoencoder_size(self, img_dim_1, img_dim_2, init_dim_1, init_dim_2, scale_factor):
         if self.type_requires_divisible_shape:
@@ -372,7 +372,7 @@ def _evaluate(sr_model : BaseSuperResolutionModel, validation_dir, scale_pred=Fa
                 y_pred = y_pred.transpose((1, 2, 0))
 
             y_pred = np.clip(y_pred, 0, 255).astype('uint8')
-            img_utils.imsave(generated_path, y_pred)
+            img_utils.imageio.imwrite(generated_path, y_pred)
 
         print("Average PRNS value of validation images = %00.4f \n" % (total_psnr / nb_images))
 
@@ -471,7 +471,7 @@ def _evaluate_denoise(sr_model : BaseSuperResolutionModel, validation_dir, scale
                 y_pred = y_pred.transpose((1, 2, 0))
 
             y_pred = np.clip(y_pred, 0, 255).astype('uint8')
-            img_utils.imsave(generated_path, y_pred)
+            img_utils.imageio.imwrite(generated_path, y_pred)
 
         print("Average PRNS value of validation images = %00.4f \n" % (total_psnr / nb_images))
 
