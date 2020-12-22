@@ -141,8 +141,9 @@ class BaseSuperResolutionModel(object):
         :param mode: mode of upscaling. Can be "patch" or "fast"
         """
         import os
-        from scipy.misc import imread, imresize, imsave
-
+#         from scipy.misc import imread, imresize, imsave
+        from imageio import imread ,imwrite
+        import cv2
         # Destination path
         path = os.path.splitext(img_path)
         filename = path[0] + "_" + suffix + "(%dx)" % (self.scale_factor) + path[1]
@@ -178,7 +179,7 @@ class BaseSuperResolutionModel(object):
             img_dim_1, img_dim_2 = self.__match_autoencoder_size(img_dim_1, img_dim_2, init_dim_1, init_dim_2,
                                                                  scale_factor)
 
-            images = imresize(true_img, (img_dim_1, img_dim_2))
+            images = cv2.resize(true_img, (img_dim_1, img_dim_2))
             images = np.expand_dims(images, axis=0)
             print("Image is reshaped to : (%d, %d, %d)" % (images.shape[1], images.shape[2], images.shape[3]))
 
@@ -187,7 +188,7 @@ class BaseSuperResolutionModel(object):
         if save_intermediate:
             if verbose: print("Saving intermediate image.")
             fn = path[0] + "_intermediate_" + path[1]
-            intermediate_img = imresize(true_img, (init_dim_1 * scale_factor, init_dim_2 * scale_factor))
+            intermediate_img = cv2.resize(true_img, (init_dim_1 * scale_factor, init_dim_2 * scale_factor))
             imsave(fn, intermediate_img)
 
         # Transpose and Process images
@@ -315,7 +316,7 @@ def _evaluate(sr_model : BaseSuperResolutionModel, validation_dir, scale_pred=Fa
                     print("Model %s require the image size to be divisible by 4. New image size = (%d, %d)" % \
                           (sr_model.model_name, width, height))
 
-                    y = img_utils.imresize(y, (width, height), interp='bicubic')
+                    y = img_utils.cv2.resize(y, (width, height), interp='bicubic')
 
             y = y.astype('float32')
             x_width = width if not sr_model.type_true_upscaling else width // sr_model.scale_factor
@@ -332,11 +333,11 @@ def _evaluate(sr_model : BaseSuperResolutionModel, validation_dir, scale_pred=Fa
 
             y = np.expand_dims(y, axis=0)
 
-            img = img_utils.imresize(x_temp, (x_width, x_height),
+            img = img_utils.cv2.resize(x_temp, (x_width, x_height),
                                      interp='bicubic')
 
             if not sr_model.type_true_upscaling:
-                img = img_utils.imresize(img, (x_width, x_height), interp='bicubic')
+                img = img_utils.cv2.resize(img, (x_width, x_height), interp='bicubic')
 
 
             x = np.expand_dims(img, axis=0)
@@ -408,7 +409,7 @@ def _evaluate_denoise(sr_model : BaseSuperResolutionModel, validation_dir, scale
                 print("Model %s require the image size to be divisible by 4. New image size = (%d, %d)" % \
                       (sr_model.model_name, width, height))
 
-                y = img_utils.imresize(y, (width, height), interp='bicubic')
+                y = img_utils.cv2.resize(y, (width, height), interp='bicubic')
 
             y = y.astype('float32')
             y = np.expand_dims(y, axis=0)
@@ -422,11 +423,11 @@ def _evaluate_denoise(sr_model : BaseSuperResolutionModel, validation_dir, scale
                 x_temp /= 255.
                 y /= 255.
 
-            img = img_utils.imresize(x_temp[0], (width // sr_model.scale_factor, height // sr_model.scale_factor),
+            img = img_utils.cv2.resize(x_temp[0], (width // sr_model.scale_factor, height // sr_model.scale_factor),
                                      interp='bicubic', mode='RGB')
 
             if not sr_model.type_true_upscaling:
-                img = img_utils.imresize(img, (width, height), interp='bicubic')
+                img = img_utils.cv2.resize(img, (width, height), interp='bicubic')
 
             x = np.expand_dims(img, axis=0)
 
