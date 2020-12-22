@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from keras.models import Model
 from keras.layers import Concatenate, Add, Average, Input, Dense, Flatten, BatchNormalization, Activation, LeakyReLU
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, Convolution2DTranspose
-from keras import backend as K
+from keras import backend keras.backend.image_data_format()as K
 from keras.utils.np_utils import to_categorical
 import keras.callbacks as callbacks
 import keras.optimizers as optimizers
@@ -73,7 +73,7 @@ class BaseSuperResolutionModel(object):
             assert height * img_utils._image_scale_multiplier % 4 == 0, "Height of the image must be divisible by 4"
             assert width * img_utils._image_scale_multiplier % 4 == 0, "Width of the image must be divisible by 4"
 
-        if K.image_dim_ordering() == "th":
+        if K.image_data_format() == "th":
             if width is not None and height is not None:
                 shape = (channels, width * img_utils._image_scale_multiplier, height * img_utils._image_scale_multiplier)
             else:
@@ -192,7 +192,7 @@ class BaseSuperResolutionModel(object):
             imwrite(fn, intermediate_img)
 
         # Transpose and Process images
-        if K.image_dim_ordering() == "th":
+        if K.image_data_format() == "th":
             img_conv = images.transpose((0, 3, 1, 2)).astype(np.float32) / 255.
         else:
             img_conv = images.astype(np.float32) / 255.
@@ -206,7 +206,7 @@ class BaseSuperResolutionModel(object):
         if verbose: print("De-processing images.")
 
          # Deprocess patches
-        if K.image_dim_ordering() == "th":
+        if K.image_data_format() == "th":
             result = result.transpose((0, 2, 3, 1)).astype(np.float32) * 255.
         else:
             result = result.astype(np.float32) * 255.
@@ -342,7 +342,7 @@ def _evaluate(sr_model : BaseSuperResolutionModel, validation_dir, scale_pred=Fa
 
             x = np.expand_dims(img, axis=0)
 
-            if K.image_dim_ordering() == "th":
+            if K.image_data_format() == "th":
                 x = x.transpose((0, 3, 1, 2))
                 y = y.transpose((0, 3, 1, 2))
 
@@ -368,7 +368,7 @@ def _evaluate(sr_model : BaseSuperResolutionModel, validation_dir, scale_pred=Fa
 
             generated_path = predict_path + "%s_%s_generated.png" % (sr_model.model_name, os.path.splitext(impath)[0])
 
-            if K.image_dim_ordering() == "th":
+            if K.image_data_format() == "th":
                 y_pred = y_pred.transpose((1, 2, 0))
 
             y_pred = np.clip(y_pred, 0, 255).astype('uint8')
@@ -431,7 +431,7 @@ def _evaluate_denoise(sr_model : BaseSuperResolutionModel, validation_dir, scale
 
             x = np.expand_dims(img, axis=0)
 
-            if K.image_dim_ordering() == "th":
+            if K.image_data_format() == "th":
                 x = x.transpose((0, 3, 1, 2))
                 y = y.transpose((0, 3, 1, 2))
 
@@ -467,7 +467,7 @@ def _evaluate_denoise(sr_model : BaseSuperResolutionModel, validation_dir, scale
 
             generated_path = predict_path + "%s_%s_generated.png" % (sr_model.model_name, os.path.splitext(impath)[0])
 
-            if K.image_dim_ordering() == "th":
+            if K.image_data_format() == "th":
                 y_pred = y_pred.transpose((1, 2, 0))
 
             y_pred = np.clip(y_pred, 0, 255).astype('uint8')
@@ -577,7 +577,7 @@ class DenoisingAutoEncoderSR(BaseSuperResolutionModel):
         # Perform check that model input shape is divisible by 4
         init = super(DenoisingAutoEncoderSR, self).create_model(height, width, channels, load_weights, batch_size)
 
-        if K.image_dim_ordering() == "th":
+        if K.image_data_format() == "th":
             output_shape = (None, channels, width, height)
         else:
             output_shape = (None, width, height, channels)
@@ -831,7 +831,7 @@ class GANImageSuperResolutionModel(BaseSuperResolutionModel):
         """
         assert mode in ['test', 'train'], "'mode' must be either 'train' or 'test'"
 
-        channel_axis = 1 if K.image_dim_ordering() == 'th' else -1
+        channel_axis = 1 if K.image_data_format() == 'th' else -1
 
         gen_init = super(GANImageSuperResolutionModel, self).create_model(height, width, channels, load_weights, batch_size)
 
@@ -939,7 +939,7 @@ class GANImageSuperResolutionModel(BaseSuperResolutionModel):
     def fit(self, nb_pretrain_samples=5000, batch_size=128, nb_epochs=100, disc_train_flip=0.1,
             save_history=True, history_fn="GAN SRCNN History.txt"):
         samples_per_epoch = img_utils.image_count()
-        meanaxis = (0, 2, 3) if K.image_dim_ordering() == 'th' else (0, 1, 2)
+        meanaxis = (0, 2, 3) if K.image_data_format() == 'th' else (0, 1, 2)
 
         if self.model == None: self.create_model(mode='train', batch_size=batch_size)
 
