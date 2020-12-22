@@ -189,7 +189,7 @@ class BaseSuperResolutionModel(object):
             if verbose: print("Saving intermediate image.")
             fn = path[0] + "_intermediate_" + path[1]
             intermediate_img = cv2.resize(true_img, (init_dim_1 * scale_factor, init_dim_2 * scale_factor))
-            imsave(fn, intermediate_img)
+            imageio.imwrite(fn, intermediate_img)
 
         # Transpose and Process images
         if K.image_dim_ordering() == "th":
