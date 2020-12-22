@@ -197,7 +197,7 @@ class BaseSuperResolutionModel(object):
         else:
             img_conv = images.astype(np.float32) / 255.
 
-        model = self.create_model(img_dim_2, img_dim_1, load_weights=True)
+        model = self.create_model(img_dim_1, img_dim_2, load_weights=True)
         if verbose: print("Model loaded.")
 
         # Create prediction for image patches
