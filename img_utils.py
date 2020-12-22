@@ -92,7 +92,7 @@ def transform_images(directory, output_directory, scaling_factor=2, max_nb_image
         for i in range(nb_hr_images):
             ip = hr_samples[i]
             # Save ground truth image X
-            imsave(output_directory + "/y/" + "%d_%d.png" % (index, i + 1), ip)
+            imageio.imwrite(output_directory + "/y/" + "%d_%d.png" % (index, i + 1), ip)
 
             # Apply Gaussian Blur to Y
             op = gaussian_filter(ip, sigma=0.5)
@@ -105,7 +105,7 @@ def transform_images(directory, output_directory, scaling_factor=2, max_nb_image
                 op = cv2.resize(op, (hr_patch_size, hr_patch_size), interp='bicubic')
 
             # Save Y
-            imsave(output_directory + "/X/" + "%d_%d.png" % (index, i+1), op)
+            imageio.imwrite(output_directory + "/X/" + "%d_%d.png" % (index, i+1), op)
 
         print("Finished image %d in time %0.2f seconds. (%s)" % (index, time.time() - t1, file))
         index += 1
@@ -172,7 +172,7 @@ def transform_images_temp(directory, output_directory, scaling_factor=2, max_nb_
         for i in range(nb_hr_images):
             ip = hr_samples[i]
             # Save ground truth image X
-            imsave(output_directory + "/y/" + "%d_%d.png" % (index + id_advance, i + 1), ip)
+            imageio.imwrite(output_directory + "/y/" + "%d_%d.png" % (index + id_advance, i + 1), ip)
 
             # Apply Gaussian Blur to Y
             #op = gaussian_filter(ip, sigma=0.5)
@@ -185,7 +185,7 @@ def transform_images_temp(directory, output_directory, scaling_factor=2, max_nb_
                 op = cv2.resize(op, (hr_patch_size, hr_patch_size), interp='bicubic')
 
             # Save Y
-            imsave(output_directory + "/X/" + "%d_%d.png" % (index + id_advance, id_advance + i + 1), op)
+            imageio.imwrite(output_directory + "/X/" + "%d_%d.png" % (index + id_advance, id_advance + i + 1), op)
 
         print("Finished image %d in time %0.2f seconds. (%s)" % (index + id_advance, time.time() - t1, file))
         index += 1
