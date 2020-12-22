@@ -150,7 +150,7 @@ class BaseSuperResolutionModel(object):
 
         # Read image
         scale_factor = int(self.scale_factor)
-        true_img = imread(img_path, mode='RGB')
+        true_img = imread(img_path)
         init_dim_1, init_dim_2 = true_img.shape[0], true_img.shape[1]
         if verbose: print("Old Size : ", true_img.shape)
         if verbose: print("New Size : (%d, %d, 3)" % (init_dim_1 * scale_factor, init_dim_2 * scale_factor))
@@ -302,7 +302,7 @@ def _evaluate(sr_model : BaseSuperResolutionModel, validation_dir, scale_pred=Fa
             t1 = time.time()
 
             # Input image
-            y = img_utils.imread(val_dir + impath, mode='RGB')
+            y = img_utils.imread(val_dir + impath)
             width, height, _ = y.shape
 
             if sr_model.type_requires_divisible_shape:
@@ -398,7 +398,7 @@ def _evaluate_denoise(sr_model : BaseSuperResolutionModel, validation_dir, scale
             t1 = time.time()
 
             # Input image
-            y = img_utils.imread(val_dir + impath, mode='RGB')
+            y = img_utils.imread(val_dir + impath)
             width, height, _ = y.shape
 
             if ((width // sr_model.scale_factor) % 4 != 0) or ((height // sr_model.scale_factor) % 4 != 0) \
