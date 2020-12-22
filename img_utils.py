@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.feature_extraction import image
-from scipy.misc import imageio.imwrite, imread, imresize
+from scipy.misc import imageio, imread, imresize
 from sklearn.feature_extraction.image import reconstruct_from_patches_2d, extract_patches_2d
 from scipy.ndimage.filters import gaussian_filter
 import os
