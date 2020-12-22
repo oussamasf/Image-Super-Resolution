@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from keras.models import Model
+from tensorflow.keras.models import Model
 from keras.layers import Concatenate, Add, Average, Input, Dense, Flatten, BatchNormalization, Activation, LeakyReLU
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, Convolution2DTranspose
 from keras import backend as K
